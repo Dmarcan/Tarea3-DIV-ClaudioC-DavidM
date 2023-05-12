@@ -3,7 +3,9 @@
 #include <string.h>
 #include <stdbool.h>
 
+#include "funciones_answer.h"
+
 int main(void) {
-    
-  return 0;
+    mostrarMenu();
+    return 0;
 }
