@@ -20,7 +20,7 @@ void updateHeight(Node *node) {
     node->height = 1 + max(height(node->left), height(node->right));
 }
 
-
+//RETORNA EL FACTOR DE EQUILIBRIO
 int getBalance(Node *node) {
     if (node == NULL) {
         return 0;
@@ -75,24 +75,36 @@ int deleteNode(Node *node, const char *key) {
 
 Node *newNode(const char *key, void *value) {
     Node *node = (Node*) malloc(sizeof(Node));
+
+    if (node == NULL) {
+        printf("NO SE PUDO RESERVAR MEMORIA\n");
+        return NULL;
+    }
+    
     node->key = strdup(key);
     node->value = value;
     node->height = 1;
     node->left = NULL;
     node->right = NULL;
+    node->parent = NULL;
     return node;
 }
 
 Node *rightRotate(Node *y) {
     Node *x = y->left;
     Node *T2 = x->right;
-
+    // HACE LA ROTACION
     x->right = y;
     y->left = T2;
-
-    y->height = max(height(y->left), height(y->right)) + 1;
-    x->height = max(height(x->left), height(x->right)) + 1;
-
+    // ACTUALIZA EL PARENT DE Y
+    if (T2 != NULL) {
+        T2->parent = y;
+    }
+    x->parent = y->parent;
+    y->parent = x;
+    // ACTUALIZA LA ALTURA DE LOS NODOS CAMBIADOS
+    updateHeight(y);
+    updateHeight(x);
     return x;
 }
 
@@ -100,12 +112,22 @@ Node *leftRotate(Node *x) {
     Node *y = x->right;
     Node *T2 = y->left;
 
+    // HACE LA ROTACION
     y->left = x;
     x->right = T2;
 
-    x->height = max(height(x->left), height(x->right)) + 1;
-    y->height = max(height(y->left), height(y->right)) + 1;
+    // ACTUALIZA ALTURA DE NODOS MODIFICADOS
+    updateHeight(x);
+    updateHeight(y);
 
+    // ACTUALIZA PUNTEROS DEL PADRE
+    y->parent = x->parent;
+    x->parent = y;
+    if (T2 != NULL) {
+        T2->parent = x;
+    }
+
+    //RETORNA EL DATO QUE QUEDO EN LA POSICION
     return y;
 }
 
@@ -149,19 +171,20 @@ void insertNode(Node **node, const char *key, void *value) {
 /*FUNCIONES ARBOL*/
 
 //INICIALIZA ARBOL VACIO
-void avlInit(Tree *tree) {
+void avlInit(TreeMap *tree) {
     tree->root = NULL;
+    tree->current = NULL;
     tree->size = 0;
 }
 
 //INSERTA NODO AL ARBOL CON LA FUNCION "avlInserNode"
-void avlInsert(Tree *tree, const char *key, void *value) {
+void avlInsert(TreeMap *tree, const char *key, void *value) {
     insertNode(&tree->root, key, value);
     tree->size++;
 }
 
 // BUSCA Y RETORNA UN ELEMENTO DEL ARBOL ABL, SI NO SE ENCUENTRA RETORNA NULL
-void *avlGet(const Tree *tree, const char *key) {
+void *avlGet(const TreeMap *tree, const char *key) {
     Node *current = tree->root;
     while (current != NULL) {
         int cmp = strcmp(key, current->key);
@@ -176,7 +199,7 @@ void *avlGet(const Tree *tree, const char *key) {
     return NULL;
 }
 
-void avlDelete(Tree *tree, const char *key) {
+void avlDelete(TreeMap *tree, const char *key) {
     if (tree == NULL || tree->root == NULL || key == NULL) {
         return;
     }
@@ -184,3 +207,41 @@ void avlDelete(Tree *tree, const char *key) {
     tree->root = deleteNode(tree->root, key);
     tree->size--;
 }
+
+void *avlFirst(TreeMap *treeMap){
+    Node *node = treeMap->root;
+    if(node == NULL)
+        return NULL;
+    
+    while(node->left != NULL)
+        node = node->left;
+
+    treeMap->current = node;
+    return node->value;
+}
+
+/*
+void *avlNext(TreeMap* treeMap){
+    Node* node = treeMap->current;
+    if(node == NULL)
+        return NULL;
+    
+    if(node->right != NULL){
+        node = node->right;
+        while(node->left != NULL)
+            node = node->left;
+
+        treeMap->current = node;
+        return node->value;
+    }
+    
+    Node* parent = node->parent;
+    while(parent != NULL && node == parent->right){
+        node = parent;
+        parent = node->parent;
+    }
+
+    treeMap->current = parent;
+    return parent != NULL ? parent->value : NULL;
+}
+*/

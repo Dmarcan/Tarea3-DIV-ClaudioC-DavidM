@@ -2,20 +2,22 @@
 #define AVL_H
 
 typedef struct Node Node;
-typedef struct Tree Tree;
+typedef struct TreeMap TreeMap;
 
-typedef struct Node {
+struct Node {
     char *key;
     void *value;
     int height;
     Node *left;
     Node *right;
-} Node;
+    Node *parent;
+};
 
-typedef struct Tree {
+struct TreeMap {
     Node *root;
+    Node *current;
     int size;
-} Tree;
+};
 
 
 /*FUNCIONES COMPLEMENTARIAS AL ARBOL*/
@@ -41,14 +43,18 @@ void insertNode(Node **node, const char *key, void *value);
 
 /*FUNCIONES ARBOL*/
 
-void avlInit(Tree *tree);
+void avlInit(TreeMap *treeMap);
 
-//void avlClear(Tree *tree);
+//void avlClear(TreeMap *tree);
 
-void avlInsert(Tree *tree, const char *key, void *value);
+void avlInsert(TreeMap *treeMap, const char *key, void *value);
 
-void *avlGet(const Tree *tree, const char *key); 
+void *avlGet(const TreeMap *treeMap, const char *key); 
 
-void avlDelete(Tree *tree, const char *key);
+void avlDelete(TreeMap *treeMap, const char *key);
+
+void* avlFirst(TreeMap *treeMap);
+
+//void *avlNext(TreeMap* treeMap);
 
 #endif /* AVL_H */

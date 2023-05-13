@@ -10,6 +10,13 @@
 
 #define MAXLEN 30
 
+struct Tarea{
+    char* nombre;
+    int check; //SI ESTA COMPLETADA 1 ; NO ESTA COMPLETADA 0
+    Stack* stackAcc; //STACK CON ACCIONES
+    TreeMap* prescendentes;
+};
+
 void mostrarOpciones(){
     printf("*********************************************************\n");
     printf("1. INGRESE 1 SI DESEA AGREGAR TAREA\n");
@@ -22,7 +29,7 @@ void mostrarOpciones(){
     printf("*********************************************************\n\n");
 }
 
-void mostrarMenu(void)
+void mostrarMenu(TreeMap* treeMap)
 {
     int opcion;
     do {
@@ -32,9 +39,11 @@ void mostrarMenu(void)
         switch (opcion) {
         case 1:
             printf("OPCION 1 INGRESADA\n\n");
+            agregarTarea(treeMap);
             break;
         case 2:
             printf("OPCION 2 INGRESADA\n\n");
+            establecerPrecedencia(treeMap);
             break;
         case 3:
             printf("OPCION 3 INGRESADA\n\n");
@@ -55,5 +64,66 @@ void mostrarMenu(void)
             printf("CERRANDO EL PROGRAMA...\n");
         }
     } while (opcion != 0);
+}
+
+
+void* createTarea(char* nombre){
+    
+    Tarea* tarea = (Tarea *) malloc(sizeof(Tarea));
+    tarea->nombre = nombre;
+    tarea->prescendentes = (TreeMap *) malloc(sizeof(TreeMap));
+    tarea->check = 0;
+    tarea->stackAcc = createStack(3);
+    return tarea;
+}
+
+void agregarTarea(TreeMap* treeMap)
+{
+    char nombre[MAXLEN + 1];
+    do{
+        printf("INGRESE NOMBRE DE LA TAREA A AGREGAR\n");
+        scanf("%s",nombre);
+        getchar();
+    }while(strlen(nombre) > MAXLEN);
+
+    char prioridad[6];
+    do{
+        printf("INGRESE PRIORIDAD DE LA TAREA %s\n",nombre);
+        scanf("%s",prioridad);
+    }while(strlen(prioridad) > 5);
+
+    avlInsert(treeMap,prioridad,createTarea(nombre));
+     
+    return;
+}
+
+void establecerPrecedencia(TreeMap* treeMap)
+{
+    char tarea1[MAXLEN + 1];
+    do{
+        printf("INGRESE NOMBRE DE LA TAREA QUE DEBE REALIZARSE PRIMERO\n");
+        scanf("%s",tarea1);
+        getchar();
+    }while(strlen(tarea1) > MAXLEN);
+    
+    if (avlGet(treeMap,tarea1)==NULL)
+    {
+        printf("LA TAREA %s NO SE ENCUENTRA EN LA BASE DE DATOS\n",tarea1);
+        return;
+    }
+    
+    char tarea2[MAXLEN + 1];
+    do{
+        printf("INGRESE NOMBRE DE LA TAREA QUE DEBE REALIZARSE DESPUES DE LA TAREA %s\n",tarea1);
+        scanf("%s",tarea2);
+        getchar();
+    }while(strlen(tarea2) > MAXLEN);
+
+    if (avlGet(treeMap,tarea2)==NULL)
+    {
+        printf("LA TAREA %s NO SE ENCUENTRA EN LA BASE DE DATOS\n",tarea1);
+        return;
+    }
+    
 }
 
