@@ -17,13 +17,37 @@ typedef struct avlTree {
     int size;
 } avlTree;
 
-void avlInit(avlTree *tree);
 
-void avlClear(avlTree *tree);
+/*FUNCIONES COMPLEMENTARIAS AL ARBOL*/
 
-void avlInsert(avlTree *tree, const char *key, void *value);
+int height(avlNode *node);
 
-void *avlGet(const avlTree *tree, const char *key);
+int max(int a, int b);
+
+void updateHeight(avlNode *node);
+
+int getBalance(avlNode *node);
+
+int deleteNode(avlNode *node, const char *key);
+
+avlNode *newNode(const char *key, void *value);
+
+avlNode *rightRotate(avlNode *y);
+
+avlNode *leftRotate(avlNode *x);
+
+void avlInsertNode(avlNode **node, const char *key, void *value);
+
+
+/*FUNCIONES ARBOL*/
+
+void avlInit(avlTree *tree); // lista
+
+//void avlClear(avlTree *tree);
+
+void avlInsert(avlTree *tree, const char *key, void *value); //lista
+
+void *avlGet(const avlTree *tree, const char *key); //lista
 
 void avlDelete(avlTree *tree, const char *key);
 

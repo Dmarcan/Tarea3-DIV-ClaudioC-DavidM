@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 #include "stack.h"
+#include "AVL-tree.h"
 #include "funciones_answer.h"
 
 #define MAXLEN 30
