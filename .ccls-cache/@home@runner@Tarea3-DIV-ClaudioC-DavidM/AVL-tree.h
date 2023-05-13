@@ -1,54 +1,54 @@
 #ifndef AVL_H
 #define AVL_H
 
-typedef struct avlNode avlNode;
-typedef struct avlTree avlTree;
+typedef struct Node Node;
+typedef struct Tree Tree;
 
-typedef struct avlNode {
+typedef struct Node {
     char *key;
     void *value;
     int height;
-    avlNode *left;
-    avlNode *right;
-} avlNode;
+    Node *left;
+    Node *right;
+} Node;
 
-typedef struct avlTree {
-    avlNode *root;
+typedef struct Tree {
+    Node *root;
     int size;
-} avlTree;
+} Tree;
 
 
 /*FUNCIONES COMPLEMENTARIAS AL ARBOL*/
 
-int height(avlNode *node);
+int height(Node *node);
 
 int max(int a, int b);
 
-void updateHeight(avlNode *node);
+void updateHeight(Node *node);
 
-int getBalance(avlNode *node);
+int getBalance(Node *node);
 
-int deleteNode(avlNode *node, const char *key);
+int deleteNode(Node *node, const char *key);
 
-avlNode *newNode(const char *key, void *value);
+Node *newNode(const char *key, void *value);
 
-avlNode *rightRotate(avlNode *y);
+Node *rightRotate(Node *y);
 
-avlNode *leftRotate(avlNode *x);
+Node *leftRotate(Node *x);
 
-void avlInsertNode(avlNode **node, const char *key, void *value);
+void insertNode(Node **node, const char *key, void *value);
 
 
 /*FUNCIONES ARBOL*/
 
-void avlInit(avlTree *tree); // lista
+void avlInit(Tree *tree);
 
-//void avlClear(avlTree *tree);
+//void avlClear(Tree *tree);
 
-void avlInsert(avlTree *tree, const char *key, void *value); //lista
+void avlInsert(Tree *tree, const char *key, void *value);
 
-void *avlGet(const avlTree *tree, const char *key); //lista
+void *avlGet(const Tree *tree, const char *key); 
 
-void avlDelete(avlTree *tree, const char *key);
+void avlDelete(Tree *tree, const char *key);
 
 #endif /* AVL_H */

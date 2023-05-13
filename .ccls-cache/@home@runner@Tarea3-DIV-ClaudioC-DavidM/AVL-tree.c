@@ -2,30 +2,33 @@
 #include <string.h>
 #include "AVL-tree.h"
 
-int height(avlNode *node) {
+//RETORNA LA ALTURA DE ESE NODO
+int height(Node *node) {
     if (node == NULL) {
         return 0;
     }
     return node->height;
 }
 
+//RETORNA EL CON MAYOR VALOR
 int max(int a, int b) {
     return (a > b) ? a : b;
 }
 
-void updateHeight(avlNode *node) {
+//ACTUALIZA ALTURA
+void updateHeight(Node *node) {
     node->height = 1 + max(height(node->left), height(node->right));
 }
 
 
-int getBalance(avlNode *node) {
+int getBalance(Node *node) {
     if (node == NULL) {
         return 0;
     }
     return height(node->left) - height(node->right);
 }
 
-int deleteNode(avlNode *node, const char *key) {
+int deleteNode(Node *node, const char *key) {
     if (node == NULL) {
         return NULL;
     }
@@ -42,17 +45,17 @@ int deleteNode(avlNode *node, const char *key) {
             free(node);
             return NULL;
         } else if (node->left == NULL) {
-            avlNode *right = node->right;
+            Node *right = node->right;
             free(node->key);
             free(node);
             return right;
         } else if (node->right == NULL) {
-            avlNode *left = node->left;
+            Node *left = node->left;
             free(node->key);
             free(node);
             return left;
         } else {
-            avlNode *minRight = node->right;
+            Node *minRight = node->right;
             while (minRight->left != NULL) {
                 minRight = minRight->left;
             }
@@ -70,8 +73,8 @@ int deleteNode(avlNode *node, const char *key) {
     return getBalance(node);
 }
 
-avlNode *newNode(const char *key, void *value) {
-    avlNode *node = (avlNode*) malloc(sizeof(avlNode));
+Node *newNode(const char *key, void *value) {
+    Node *node = (Node*) malloc(sizeof(Node));
     node->key = strdup(key);
     node->value = value;
     node->height = 1;
@@ -80,9 +83,9 @@ avlNode *newNode(const char *key, void *value) {
     return node;
 }
 
-avlNode *rightRotate(avlNode *y) {
-    avlNode *x = y->left;
-    avlNode *T2 = x->right;
+Node *rightRotate(Node *y) {
+    Node *x = y->left;
+    Node *T2 = x->right;
 
     x->right = y;
     y->left = T2;
@@ -93,9 +96,9 @@ avlNode *rightRotate(avlNode *y) {
     return x;
 }
 
-avlNode *leftRotate(avlNode *x) {
-    avlNode *y = x->right;
-    avlNode *T2 = y->left;
+Node *leftRotate(Node *x) {
+    Node *y = x->right;
+    Node *T2 = y->left;
 
     y->left = x;
     x->right = T2;
@@ -108,7 +111,7 @@ avlNode *leftRotate(avlNode *x) {
 
 
 // INSERTA NODO AL ARBOL AVL
-void avlInsertNode(avlNode **node, const char *key, void *value) {
+void insertNode(Node **node, const char *key, void *value) {
     //SI ESTA VACIO SOLO SE CREA EL NODO Y SE INSERTA EN LA RAIZ (NO NECESIDAD DE ROTACIONES)
     if (*node == NULL) {
         *node = newNode(key, value);
@@ -119,9 +122,9 @@ void avlInsertNode(avlNode **node, const char *key, void *value) {
     //STRCMP COMPARA LA CLAVE CON LOS NODOS DEL ARBOL Y DEPENDIENDO SI SU CLAVE ES MAYOR O MENOR SE DIRIGE A UNA RAMA
     int cmp = strcmp(key, (*node)->key);
     if (cmp < 0) {
-        avlInsertNode(&(*node)->left, key, value);
+        insertNode(&(*node)->left, key, value);
     } else if (cmp > 0) {
-        avlInsertNode(&(*node)->right, key, value);
+        insertNode(&(*node)->right, key, value);
     } else {
         (*node)->value = value;
         return;
@@ -146,20 +149,20 @@ void avlInsertNode(avlNode **node, const char *key, void *value) {
 /*FUNCIONES ARBOL*/
 
 //INICIALIZA ARBOL VACIO
-void avlInit(avlTree *tree) {
+void avlInit(Tree *tree) {
     tree->root = NULL;
     tree->size = 0;
 }
 
 //INSERTA NODO AL ARBOL CON LA FUNCION "avlInserNode"
-void avlInsert(avlTree *tree, const char *key, void *value) {
-    avlInsertNode(&tree->root, key, value);
+void avlInsert(Tree *tree, const char *key, void *value) {
+    insertNode(&tree->root, key, value);
     tree->size++;
 }
 
 // BUSCA Y RETORNA UN ELEMENTO DEL ARBOL ABL, SI NO SE ENCUENTRA RETORNA NULL
-void *avlGet(const avlTree *tree, const char *key) {
-    avlNode *current = tree->root;
+void *avlGet(const Tree *tree, const char *key) {
+    Node *current = tree->root;
     while (current != NULL) {
         int cmp = strcmp(key, current->key);
         if (cmp == 0) {
@@ -173,7 +176,7 @@ void *avlGet(const avlTree *tree, const char *key) {
     return NULL;
 }
 
-void avlDelete(avlTree *tree, const char *key) {
+void avlDelete(Tree *tree, const char *key) {
     if (tree == NULL || tree->root == NULL || key == NULL) {
         return;
     }
