@@ -9,12 +9,6 @@
 
 #define MAXLEN 30
 
-struct Tarea{
-    char nombre[MAXLEN+1];
-    //HashMap* mapTareasPrece;
-    bool esPrecedente;
-};
-
 void mostrarOpciones(){
     printf("*********************************************************\n");
     printf("1. INGRESE 1 SI DESEA AGREGAR TAREA\n");
@@ -37,7 +31,6 @@ void mostrarMenu(void)
         switch (opcion) {
         case 1:
             printf("OPCION 1 INGRESADA\n\n");
-            //agregarTarea(map);
             break;
         case 2:
             printf("OPCION 2 INGRESADA\n\n");

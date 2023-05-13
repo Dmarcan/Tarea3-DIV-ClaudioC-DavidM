@@ -8,6 +8,4 @@ void mostrarOpciones();
 
 void mostrarMenu(void);
 
-//void agregarTarea(TreeMap* map);
-
 #endif /* Funciones_answer_h */
