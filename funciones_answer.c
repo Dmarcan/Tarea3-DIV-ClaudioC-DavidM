@@ -5,16 +5,19 @@
 #include <stdbool.h>
 
 #include "stack.h"
-#include "AVL-tree.h"
+#include "hashmap.h"
 #include "funciones_answer.h"
 
 #define MAXLEN 30
 
 struct Tarea{
     char* nombre;
-    int check; //SI ESTA COMPLETADA 1 ; NO ESTA COMPLETADA 0
-    Stack* stackAcc; //STACK CON ACCIONES
-    TreeMap* prescendentes;
+    int check; // Si esta completa 1 ; No esta completa 0
+    int cantPresce;
+    char** prescedentes;
+    //int prioridad;
+    Stack* stackAcc; //Stack con acciones
+    
 };
 
 void mostrarOpciones(){
@@ -29,7 +32,7 @@ void mostrarOpciones(){
     printf("*********************************************************\n\n");
 }
 
-void mostrarMenu(TreeMap* treeMap)
+void mostrarMenu(HashMap* hashMap)
 {
     int opcion;
     do {
@@ -39,14 +42,15 @@ void mostrarMenu(TreeMap* treeMap)
         switch (opcion) {
         case 1:
             printf("OPCION 1 INGRESADA\n\n");
-            agregarTarea(treeMap);
+            agregarTarea(hashMap);
             break;
         case 2:
             printf("OPCION 2 INGRESADA\n\n");
-            establecerPrecedencia(treeMap);
+            establecerPrecedencia(hashMap);
             break;
         case 3:
             printf("OPCION 3 INGRESADA\n\n");
+            mostrarTareasPendientes(hashMap);
             break;
         case 4:
             printf("OPCION 4 INGRESADA\n\n");
@@ -71,13 +75,15 @@ void* createTarea(char* nombre){
     
     Tarea* tarea = (Tarea *) malloc(sizeof(Tarea));
     tarea->nombre = nombre;
-    tarea->prescendentes = (TreeMap *) malloc(sizeof(TreeMap));
+    tarea->prescedentes = (char **) malloc(sizeof(char *));
+    //tarea->prioridad =
+    tarea->cantPresce = 0;
     tarea->check = 0;
     tarea->stackAcc = createStack(3);
     return tarea;
 }
 
-void agregarTarea(TreeMap* treeMap)
+void agregarTarea(HashMap* hashMap)
 {
     char nombre[MAXLEN + 1];
     do{
@@ -86,18 +92,19 @@ void agregarTarea(TreeMap* treeMap)
         getchar();
     }while(strlen(nombre) > MAXLEN);
 
-    char prioridad[6];
+    int prioridad;
     do{
         printf("INGRESE PRIORIDAD DE LA TAREA %s\n",nombre);
-        scanf("%s",prioridad);
-    }while(strlen(prioridad) > 5);
+        scanf("%d",&prioridad);
+    }while(prioridad < 0);
 
-    avlInsert(treeMap,prioridad,createTarea(nombre));
+    insertMap(hashMap,nombre,createTarea(nombre));
+    insertInfo(hashMap,nombre,prioridad);
      
     return;
 }
 
-void establecerPrecedencia(TreeMap* treeMap)
+void establecerPrecedencia(HashMap* hashMap)
 {
     char tarea1[MAXLEN + 1];
     do{
@@ -105,8 +112,9 @@ void establecerPrecedencia(TreeMap* treeMap)
         scanf("%s",tarea1);
         getchar();
     }while(strlen(tarea1) > MAXLEN);
+
     
-    if (avlGet(treeMap,tarea1)==NULL)
+    if (searchMap(hashMap,tarea1) == NULL) 
     {
         printf("LA TAREA %s NO SE ENCUENTRA EN LA BASE DE DATOS\n",tarea1);
         return;
@@ -117,13 +125,42 @@ void establecerPrecedencia(TreeMap* treeMap)
         printf("INGRESE NOMBRE DE LA TAREA QUE DEBE REALIZARSE DESPUES DE LA TAREA %s\n",tarea1);
         scanf("%s",tarea2);
         getchar();
-    }while(strlen(tarea2) > MAXLEN);
+    }while(strlen(tarea2) > MAXLEN || strcmp(tarea1, tarea2) == 0);
 
-    if (avlGet(treeMap,tarea2)==NULL)
+    if (searchMap(hashMap,tarea2) == NULL) 
     {
-        printf("LA TAREA %s NO SE ENCUENTRA EN LA BASE DE DATOS\n",tarea1);
+        printf("LA TAREA %s NO SE ENCUENTRA EN LA BASE DE DATOS\n",tarea2);
         return;
     }
-    
+
+    Tarea* aux = (Tarea *) searchMap(hashMap,tarea1)->value;
+    int indice = aux->cantPresce;
+    aux->prescedentes = (char **) realloc(aux->prescedentes,sizeof(char *));
+    strcpy(aux->prescedentes[indice],tarea2);
+    (aux->cantPresce)++;
 }
 
+
+void mostrarTareasPendientes(HashMap * hashMap)
+{
+    printf("TAREAS PENDIENTES EN ORDEN DE PRIORIDAD\n");
+    
+    int max1 = hashMap->infoPriority->size;
+    int cont = 1;
+    for(int k = 0 ; k < max1 ; k++)
+    {
+        char * aux1 = hashMap->infoPriority->duo[k].nombre;
+        Tarea* aux2 = (Tarea *) searchMap(hashMap,aux1)->value;
+        int max2 = aux2->cantPresce;
+        for(int j = 0 ; j < max2 ; j++)
+        {
+            printf("TAREA %d PRESCEDENTE: %s",cont,aux2->prescedentes[j]);
+            cont++;
+        }
+        printf("TAREA POST PRESCEDENTES %d: %s",cont,aux1);
+        cont++;
+        
+    }
+
+    
+}

@@ -3,16 +3,14 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "AVL-tree.h"
+#include "hashmap.h"
 #include "stack.h"
 #include "funciones_answer.h"
 
 int main(void) {
 
-    TreeMap* treeMap = (TreeMap *) malloc(sizeof(TreeMap));
-    avlInit(treeMap);
-    //TreeMap* treeMap;
+    HashMap* newMap = (HashMap *) createMap(10);
     
-    mostrarMenu(treeMap);
+    mostrarMenu(newMap);
     return 0;
 }
