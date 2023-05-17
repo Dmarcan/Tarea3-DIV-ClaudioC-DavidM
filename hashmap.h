@@ -1,6 +1,6 @@
 #ifndef HashMap_h
 #define HashMap_h
-
+#include "stdbool.h"
 typedef struct HashMap HashMap;
 typedef struct HashMap mapItem;
 
@@ -9,29 +9,15 @@ typedef struct Pair {
      void * value; 
 } Pair;
 
-typedef struct Duo {
-    char * nombre;
-    int * priority;
-} Duo;
-
-typedef struct Priority{
-    long capacity;
-    long size;
-    long current;
-    Duo* duo;
-} Priority;
-
 typedef struct parItems{
      char * key;
      void * value; 
 } parItems;
 
-
-
 struct HashMap {
     Pair** buckets;
-    Priority* infoPriority;
     long size;
+    void* arrayList;
     long capacity; 
     long current; 
 };
@@ -55,5 +41,7 @@ void enlarge(HashMap * map);
 bool areTaskPresents(HashMap * map);
 
 long sizeMap(HashMap * map);
+
+//void insertArray(HashMap * map, void *)
 
 #endif /* HashMap_h */

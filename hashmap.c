@@ -3,7 +3,9 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdbool.h>
+
 #include "hashmap.h"
+#include "arraylist.h""
 
 typedef struct HashMap HashMap;
 //typedef struct HashMap mapItem;
@@ -50,21 +52,6 @@ int is_equal(void* key1, void* key2){
     return 0;
 }
 
-void insertInfo(HashMap * map, char * nombre, int priority)
-{
-    Priority* aux  = map->infoPriority;
-    if (aux->size >= 0.70 * aux->capacity)
-    {
-        aux->capacity *= 2;
-        aux->duo = (Duo *) realloc(aux->duo, sizeof(Duo) * aux->capacity);
-    }
-
-    aux->duo[aux->size].nombre = (char **) malloc(sizeof(char*) * 31);
-    strcpy(aux->duo[aux->size].nombre, nombre);
-    aux->duo[aux->current].priority = priority;
-    aux->size++;
-    
-}
 
 
 void insertMap(HashMap * map, char * key, void * value) {
@@ -80,6 +67,7 @@ void insertMap(HashMap * map, char * key, void * value) {
     }
     
     map->buckets[indice] = createPair(key,value);
+    //printf("%s",map->buckets[indice]->key);
     map->current=indice;
     map->size++;
     return;
@@ -111,15 +99,8 @@ HashMap * createMap(long capacity) {
     map->buckets = (Pair **) calloc(capacity,sizeof(Pair *));
     
     if (map->buckets == NULL) return NULL;
-
     
-    map->infoPriority = (Priority *) malloc(sizeof(Priority));
-    if (map->infoPriority == NULL) return NULL;
-    map->infoPriority->duo = (Duo *) calloc(5, sizeof(Duo));
-    map->infoPriority->size = 0;
-    map->infoPriority->capacity = 5;
-    map->infoPriority->current = -1;
-    
+    map->arrayList = createList(3);
     map->size = 0;
     map->capacity = capacity;
     map->current = -1;
@@ -138,7 +119,7 @@ void eraseMap(HashMap * map,  char * key) {
 Pair * searchMap(HashMap * map,  char * key) {  
     long indice = hash(key,map->capacity);
     
-    while (map->buckets[indice]!=NULL)
+    while (map->buckets[indice] != NULL)
     {
         if (is_equal(key,map->buckets[indice]->key))
         {
