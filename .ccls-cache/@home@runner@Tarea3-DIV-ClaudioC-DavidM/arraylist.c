@@ -2,8 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//#include <stdbool.h>
-//#include "hashmap.h"
+
 #include "arraylist.h"
 
 ArrayList *createList(int capacity) {
@@ -23,8 +22,7 @@ ArrayList *createList(int capacity) {
 void pushBack(ArrayList *arrayList, char *nombre, int priority) {
   if (arrayList->size >= 0.70 * arrayList->capacity) {
     arrayList->capacity *= 2;
-    arrayList->array =
-        (Duo *)realloc(arrayList->array, sizeof(Duo) * (arrayList->capacity));
+    arrayList->array = (Duo *)realloc(arrayList->array, sizeof(Duo) * (arrayList->capacity));
 
     if (arrayList->array == NULL) {
       printf("ERROR AL RESERVAR MEMORIA\n");
@@ -33,8 +31,7 @@ void pushBack(ArrayList *arrayList, char *nombre, int priority) {
   }
 
   int size = arrayList->size;
-  arrayList->array[size].nombre =
-      (char *)malloc(sizeof(char) * (strlen(nombre) + 1));
+  arrayList->array[size].nombre = (char *)malloc(sizeof(char) * (strlen(nombre) + 1));
   strcpy(arrayList->array[size].nombre, nombre);
   arrayList->array[size].priority = priority;
   arrayList->size++;

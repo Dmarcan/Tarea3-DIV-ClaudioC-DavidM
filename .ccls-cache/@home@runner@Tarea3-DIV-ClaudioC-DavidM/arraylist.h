@@ -13,7 +13,6 @@ typedef struct Priority{
     Duo* array;
 } ArrayList;
 
-int cmp(const void* elemento1, const void* elemento2);
 
 ArrayList * createList(int capacity);
 
@@ -23,7 +22,6 @@ void first(ArrayList * arrayList);
 
 void next(ArrayList * arrayList);
 
-//int cmp(int priority1, int priority2);
-
+int cmp(const void* elemento1, const void* elemento2);
 
 #endif /* arrayList_h */

@@ -1,7 +1,6 @@
 #ifndef Funciones_answer_h
 #define Funciones_answer_h
 
-//#include "stack.h"
 #include "hashmap.h"
 
 typedef struct Tarea Tarea;

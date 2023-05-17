@@ -5,12 +5,10 @@
 #include <stdbool.h>
 
 #include "hashmap.h"
-#include "arraylist.h""
+#include "arraylist.h"
 
 typedef struct HashMap HashMap;
-//typedef struct HashMap mapItem;
 int enlarge_called=0; 
-
 
 struct mapItem {
     parItems** buckets;
@@ -19,16 +17,6 @@ struct mapItem {
     long current; 
 };
 
-
-/*
-struct HashMap {
-    Pair** buckets;
-    Priority* infoPriority;
-    long size;
-    long capacity; 
-    long current; 
-};
-*/
 
 Pair * createPair( char * key,  void * value) {
     Pair * new = (Pair *)malloc(sizeof(Pair));
@@ -67,7 +55,6 @@ void insertMap(HashMap * map, char * key, void * value) {
     }
     
     map->buckets[indice] = createPair(key,value);
-    //printf("%s",map->buckets[indice]->key);
     map->current=indice;
     map->size++;
     return;

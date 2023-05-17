@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdbool.h>
+
 #include "arraylist.h"
 #include "stack.h"
 #include "hashmap.h"
@@ -17,7 +18,7 @@ struct Tarea{
     int cantPresce;
     int prioridad;
     Stack* stackAcc; //Stack con acciones
-    bool esPrecedente;
+    int esPrecedente;//1=es precedente,0 =no es precedente
 };
 
 void mostrarOpciones(){
@@ -79,7 +80,7 @@ void* createTarea(char* nombre, int prioridad){
     tarea->prescedentes = (char **) calloc(30, sizeof(char *));
     tarea->cantPresce = 0;
     tarea->check = 0;
-    tarea->esPrecedente=false;
+    tarea->esPrecedente = 0;
     tarea->stackAcc = createStack(3);
     return tarea;
 }
@@ -93,10 +94,8 @@ void agregarTarea(HashMap* hashMap)
         getchar();
     }while(strlen(nombre) > MAXLEN);
 
-    
     int prioridad;
     do{
-      
         printf("INGRESE PRIORIDAD DE LA TAREA %s\n",nombre);
         scanf("%d",&prioridad);
     }while(prioridad < 0);
@@ -117,7 +116,6 @@ void establecerPrecedencia(HashMap* hashMap)
         getchar();
     }while(strlen(tarea1) > MAXLEN);
 
-    
     if (searchMap(hashMap,tarea1) == NULL) 
     {
         printf("LA TAREA %s NO SE ENCUENTRA EN LA BASE DE DATOS\n",tarea1);
@@ -142,47 +140,38 @@ void establecerPrecedencia(HashMap* hashMap)
     aux->prescedentes[indice] = strdup(tarea1);
     (aux->cantPresce)++;
 }
-
-/*
-void mostrarMapa(HashMap *map)
-{
-    printf("INICIO MAPA\n");
-    for (Pair* current = firstMap(map)  ; current != NULL ; current=nextMap(map))
-    {
-        Tarea* tarea=current->value;
-        printf("%s\n",tarea->nombre);
-            
-    }
-    printf("FIN MAPA\n");
-}
-*/
-    
+  
 
 void mostrarTareasPendientes(HashMap *hashMap) {
-    printf("TAREAS PENDIENTES EN ORDEN DE PRIORIDAD\n\n");
-    
-    int max1 = ((ArrayList *) hashMap->arrayList)->size;
+    printf("TAREAS POR HACER, ORDENADAS POR PRIORIDAD Y PRECEDENCIA : \n\n");
+    int cantTareas = ((ArrayList *) hashMap->arrayList)->size;
     int cont = 1;
 
-    for(int k = 0 ; k < max1 ; k++) {
-        char *aux1 = (char *) ( (ArrayList *)hashMap->arrayList)->array[k].nombre;
+    for(int k = 0 ; k < cantTareas ; k++) {
+        char *tareaActual = (char *) ( (ArrayList *)hashMap->arrayList)->array[k].nombre;
         
-        Pair* current = searchMap(hashMap, aux1);
-        Tarea* aux2 = current->value;
-
-        //if(aux2->cantPresce == 0)
-            //printf("TAREA %s (Prioridad: %d)",aux1,current->value->pri)
+        Tarea* tareaActualMapa = (Tarea *) searchMap(hashMap,tareaActual)->value;
+        int totalPrecedentes = tareaActualMapa->cantPresce;
         
-        int max2 = aux2->cantPresce;
-        for(int j = 0 ; j < max2 ; j++) {
-            Pair* currentBusc=searchMap(hashMap,aux2->prescedentes[j]);
-            Tarea* aux3 = current->value;
-            aux3->esPrecedente=true;
-            printf("%i. Tarea %s (Prioridad: %i)\n", cont, aux2->prescedentes[j],aux3->prioridad);
+        for(int j = 0 ; j < totalPrecedentes ; j++) {//impresion de precedentes
+            Tarea* tareaPrecedente = (Tarea *) searchMap(hashMap,tareaActualMapa->prescedentes[j])->value;
+            tareaPrecedente->esPrecedente = 1;
+            
+            printf("%i. Tarea %s (Prioridad: %i)\n", cont, tareaActualMapa->prescedentes[j],tareaPrecedente->prioridad);
             cont++;
         }
-        //if (aux2->esPrecedente == false)printf("%i. Tarea %s (Prioridad: %i)\n",cont,aux1,aux2->prioridad);
-        printf("%i. Tarea %s (Prioridad: %i)\n",cont,aux1,aux2->prioridad);
+        if (tareaActualMapa->esPrecedente == 0)printf("%i. Tarea %s (Prioridad: %i)",cont,tareaActual,tareaActualMapa->prioridad);
+        
+        if (totalPrecedentes != 0)
+        {
+            printf(" - Precedente/s:");
+            for(int j = 0 ; j < totalPrecedentes ; j++) {
+                
+                printf(" Tarea %s",tareaActualMapa->prescedentes[j]);
+            }
+            printf("\n");
+        }
+        else printf("\n");
         cont++;
     }
 }
