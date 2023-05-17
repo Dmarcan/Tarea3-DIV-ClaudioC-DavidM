@@ -168,13 +168,14 @@ void mostrarTareasPendientes(HashMap *hashMap) {
         
         //printf("El valor de aux1 es %s\n", aux1);
         Pair* current=searchMap(hashMap, aux1);
-        
-        Tarea* aux2 = current->value;
+        else{
+            Tarea* aux2 = current->value;
             
-        int max2 = aux2->cantPresce;
-        for(int j = 0 ; j < max2 ; j++) {
-            printf("TAREA %d PRESCEDENTE: %s\n", cont, aux2->prescedentes[j]);
-            cont++;
+            int max2 = aux2->cantPresce;
+            for(int j = 0 ; j < max2 ; j++) {
+                printf("TAREA %d PRESCEDENTE: %s\n", cont, aux2->prescedentes[j]);
+                cont++;
+            }
         }
         
         printf("TAREA POST PRESCEDENTES %d: %s\n", cont, aux1);
