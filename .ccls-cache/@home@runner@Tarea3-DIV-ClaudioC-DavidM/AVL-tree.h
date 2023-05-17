@@ -1,60 +1,70 @@
 #ifndef AVL_H
 #define AVL_H
 
-typedef struct Node Node;
+typedef struct TreeNode TreeNode;
 typedef struct TreeMap TreeMap;
 
-struct Node {
-    char *key;
+struct TreeNode {
+    int key;
     void *value;
+    struct node *left;
+    struct node *right;
+    struct node *parent;
     int height;
-    Node *left;
-    Node *right;
-    Node *parent;
 };
 
-struct TreeMap {
-    Node *root;
-    Node *current;
-    int size;
+struct TreeMap{
+    TreeNode *root;
+    TreeNode *current;
 };
 
-
-/*FUNCIONES COMPLEMENTARIAS AL ARBOL*/
-
-int height(Node *node);
+/* FUNCIONES COMPLEMENTARIAS */
 
 int max(int a, int b);
 
-void updateHeight(Node *node);
+int height(TreeNode *node);
 
-int getBalance(Node *node);
+// Crea un nuevo nodo con una clave y un valor dados, para ser insertado en el árbol
+TreeNode *createTreeNode(int key, void* value);
 
-int deleteNode(Node *node, const char *key);
-
-Node *newNode(const char *key, void *value);
-
-Node *rightRotate(Node *y);
-
-Node *leftRotate(Node *x);
-
-void insertNode(Node **node, const char *key, void *value);
 
 
 /*FUNCIONES ARBOL*/
 
-void avlInit(TreeMap *treeMap);
+// Función para crear un nuevo nodo AVL
+TreeNode* newTreeNode(int key, void* value);
 
-//void avlClear(TreeMap *tree);
+// Función para insertar un nuevo nodo en el árbol AVL
+void AVLInsert(TreeMap* map, int key, void* value);
 
-void avlInsert(TreeMap *treeMap, const char *key, void *value);
+// Función para eliminar un nodo del árbol AVL
+void AVLDelete(TreeMap* map, int key);
 
-void *avlGet(const TreeMap *treeMap, const char *key); 
+// Función para buscar un nodo en el árbol AVL
+TreeNode* AVLFind(TreeMap* map, int key);
 
-void avlDelete(TreeMap *treeMap, const char *key);
+// Función para obtener el nodo con la menor clave en el árbol AVL
+TreeNode* AVLFirst(TreeMap* map);
 
-void* avlFirst(TreeMap *treeMap);
+// Función para obtener el nodo siguiente en orden después de un nodo dado en el árbol AVL
+TreeNode* AVLNext(TreeMap* map, TreeNode* node);
 
-//void *avlNext(TreeMap* treeMap);
+// Función para obtener el nodo anterior en orden antes de un nodo dado en el árbol AVL
+//TreeNode* AVLPrev(TreeMap* map, TreeNode* node);
+
+// Función para balancear un subárbol AVL después de la inserción o eliminación de un nodo
+void AVLRebalance(TreeMap* map, TreeNode* node);
+
+// Función para rotar un subárbol AVL hacia la izquierda
+void AVLRotateLeft(TreeMap* map, TreeNode* node);
+
+// Función para rotar un subárbol AVL hacia la derecha
+TreeNode *AVLRotateRight(TreeMap* map, TreeNode* node);
+
+// Función para actualizar la altura de un nodo AVL
+void AVLUpdateHeight(TreeNode* node);
+
+// Función para calcular la diferencia de altura entre los subárboles izquierdo y derecho de un nodo AVL
+int AVLBalanceFactor(TreeNode* node);
 
 #endif /* AVL_H */

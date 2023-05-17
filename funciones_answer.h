@@ -1,19 +1,21 @@
 #ifndef Funciones_answer_h
 #define Funciones_answer_h
 
-#include "stack.h"
-#include "AVL-tree.h"
+//#include "stack.h"
+#include "hashmap.h"
 
 typedef struct Tarea Tarea;
 
 void mostrarOpciones();
 
-void mostrarMenu(TreeMap* treeMap);
+void mostrarMenu(HashMap * hashMap);
 
-void *createTarea(char* nombre);
+void *createTarea(char* nombre, int prioridad);
 
-void agregarTarea(TreeMap* treeMap);
+void agregarTarea(HashMap * hashMap);
 
-void establecerPrecedencia(TreeMap* treeMap);
+void establecerPrecedencia(HashMap * hashMap);
+
+void mostrarTareasPendientes(HashMap * hashMap);
 
 #endif /* Funciones_answer_h */
