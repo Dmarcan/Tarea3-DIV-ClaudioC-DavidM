@@ -291,30 +291,15 @@ void importarArchivoCSV(char* nombre_archivo, HashMap* map) {
     {
         char* nomTarea = strtok(linea, ",");
         int prioridad = atoi(strtok(NULL, ","));
+        int cantPrece=0;
         
         Tarea* tarea = (Tarea*) malloc(sizeof(Tarea));
-        strcpy(tarea->nombre,nomTarea);
+        tarea->nombre=nomTarea;
         tarea->prioridad=prioridad;
 
-        /*
-        tarea->cantidadItems=items_map;
-        tarea->mapItem = createMap(items_map);
         
-        for (int i = 0; i < items_map; i++) {
-            char* item_nombre = strtok(NULL, ",");
-            
-            if (i == items_map - 1) //elimina el \n en el ultimo item almacenado
-                item_nombre[strlen(item_nombre) - 2] = '\0';
-            
-            Pair* item = searchMap(jugador->mapItem, item_nombre);
-            
-            if (item == NULL) { 
-                insertMap(jugador->mapItem, strdup(item_nombre), strdup(item_nombre));
-            }
-            
-        }
-        */
 
+        tarea->cantPresce=cantPrece;
         if (cont != 0) { //para no leer primera linea del csv
             pushBack(map->arrayList,nomTarea,prioridad);
             insertMap(map,nomTarea,tarea);
