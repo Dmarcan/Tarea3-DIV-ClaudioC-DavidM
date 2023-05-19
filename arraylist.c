@@ -19,7 +19,7 @@ ArrayList *createList(int capacity) {
   return arrayList;
 }
 
-void pushBack(ArrayList *arrayList, char *nombre, int priority) {
+void pushBack(ArrayList * arrayList, char *nombre, int priority) {
   if (arrayList->size >= 0.70 * arrayList->capacity) {
     arrayList->capacity *= 2;
     arrayList->array = (Duo *)realloc(arrayList->array, sizeof(Duo) * (arrayList->capacity));
@@ -41,19 +41,19 @@ void pushBack(ArrayList *arrayList, char *nombre, int priority) {
   qsort(arrayList->array, arrayList->size, sizeof(Duo), cmp);
 }
 
-void first(ArrayList *arrayList) {
+Duo * first(ArrayList *arrayList) {
   if (arrayList->size == 0)
     return NULL;
   else
-    return arrayList->array[arrayList->current];
+    return &(arrayList->array[arrayList->current]);
 }
 
-void next(ArrayList *arrayList) {
+Duo * next(ArrayList *arrayList) {
   if (arrayList->current >= arrayList->size - 1)
     return NULL;
 
   arrayList->current++;
-  return arrayList->array[arrayList->current];
+  return &(arrayList->array[arrayList->current]);
 }
 
 int cmp(const void *elemento1, const void *elemento2) {
@@ -65,3 +65,37 @@ int cmp(const void *elemento1, const void *elemento2) {
   if (duo1->priority > duo2->priority)
     return 1;
 }
+
+void delete(ArrayList * arrayList, char * key) {
+    Duo* current = first(arrayList);
+
+    int k = 0;
+        
+    while(current != NULL && strcmp(current->nombre,key) != 0) {
+        current = next(arrayList);
+        k++;
+    }
+
+    Duo * aux;
+    for(int i = k ; i < arrayList->size - 1 ; i++) {
+        aux = &(arrayList->array[i]);
+        arrayList->array[i] = arrayList->array[i + 1];
+        arrayList->array[i + 1] = *aux;
+    }
+
+    arrayList->size--;
+}
+
+/*
+void search(arrayList * arrayList, char * key) {
+    Duo* current = first(arrayList);
+
+    int k = 0;
+        
+    while(current != NULL && strcmp(current->nombre,nombre)) {
+        current = next(arrayList);
+        k++;
+    }
+    
+}
+*/

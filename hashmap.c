@@ -6,6 +6,7 @@
 
 #include "hashmap.h"
 #include "arraylist.h"
+#include "stack.h"
 
 typedef struct HashMap HashMap;
 int enlarge_called=0; 
@@ -16,6 +17,8 @@ struct mapItem {
     long capacity; 
     long current; 
 };
+
+
 
 
 Pair * createPair( char * key,  void * value) {
@@ -41,7 +44,6 @@ int is_equal(void* key1, void* key2){
 }
 
 
-
 void insertMap(HashMap * map, char * key, void * value) {
     if (map->size >= 0.70 * map->capacity)
         enlarge(map);
@@ -61,7 +63,7 @@ void insertMap(HashMap * map, char * key, void * value) {
 }
 
 void enlarge(HashMap * map) {
-    enlarge_called = 1; //no borrar (testing purposes)
+    enlarge_called = 1; // no borrar (testing purposes)
     Pair** aux = map->buckets;
     long sizeAux = map->capacity;
     map->capacity *= 2;
@@ -88,9 +90,11 @@ HashMap * createMap(long capacity) {
     if (map->buckets == NULL) return NULL;
     
     map->arrayList = createList(3);
+    map->stackAcc = createStack(3);
     map->size = 0;
     map->capacity = capacity;
     map->current = -1;
+    
     return map;
 }
 

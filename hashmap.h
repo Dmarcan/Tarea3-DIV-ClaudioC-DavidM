@@ -1,6 +1,7 @@
 #ifndef HashMap_h
 #define HashMap_h
 #include "stdbool.h"
+#include "stack.h"
 typedef struct HashMap HashMap;
 typedef struct HashMap mapItem;
 
@@ -20,11 +21,12 @@ struct HashMap {
     void* arrayList;
     long capacity; 
     long current; 
+    Stack* stackAcc; //Stack con acciones
 };
 
 HashMap * createMap(long capacity);
 
-void insertInfo(HashMap * map, char * nombre, int priority);
+//void insertInfo(HashMap * map, char * nombre, int priority);
 
 void insertMap(HashMap * table, char * key, void * value);
 

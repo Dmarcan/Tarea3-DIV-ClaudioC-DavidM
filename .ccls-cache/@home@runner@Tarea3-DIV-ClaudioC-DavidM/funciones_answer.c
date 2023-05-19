@@ -17,8 +17,7 @@ struct Tarea{
     int check; // Si esta completa 1 ; No esta completa 0
     int cantPresce;
     int prioridad;
-    Stack* stackAcc; //Stack con acciones
-    int esPrecedente;//1=es precedente,0 =no es precedente
+    int esPrecedente; // 1 = es precedente, 0 = no es precedente
 };
 
 void mostrarOpciones(){
@@ -55,22 +54,24 @@ void mostrarMenu(HashMap* hashMap)
             break;
         case 4:
             printf("OPCION 4 INGRESADA\n\n");
+            marcarTarea(hashMap);
             break;
         case 5:
             printf("OPCION 5 INGRESADA\n\n");
+            deshacerUltimaAccion(hashMap);
             break;
         case 6:
             printf("OPCION 6 INGRESADA\n\n");
             char nombre_archivoE[MAXLEN+1];
             printf("INGRESE NOMBRE DEL ARCHIVO\n");
             scanf("%s", nombre_archivoE);
+            importarArchivoCSV(nombre_archivoE,hashMap);
             break;
         case 0:
             printf("CERRANDO EL PROGRAMA...\n");
         }
     } while (opcion != 0);
 }
-
 
 void* createTarea(char* nombre, int prioridad){
     
@@ -81,11 +82,10 @@ void* createTarea(char* nombre, int prioridad){
     tarea->cantPresce = 0;
     tarea->check = 0;
     tarea->esPrecedente = 0;
-    tarea->stackAcc = createStack(3);
     return tarea;
 }
 
-void agregarTarea(HashMap* hashMap)
+void agregarTarea(HashMap * hashMap)
 {
     char nombre[MAXLEN + 1];
     do{
@@ -103,11 +103,12 @@ void agregarTarea(HashMap* hashMap)
     Tarea* tarea = createTarea(nombre, prioridad);
     insertMap(hashMap,tarea->nombre,tarea);
     pushBack(hashMap->arrayList,nombre,prioridad);
-     
+    push(hashMap->stackAcc,1,nombre,NULL);
+    
     return;
 }
 
-void establecerPrecedencia(HashMap* hashMap)
+void establecerPrecedencia(HashMap * hashMap)
 {
     char tarea1[MAXLEN + 1];
     do{
@@ -139,41 +140,214 @@ void establecerPrecedencia(HashMap* hashMap)
     int indice = aux->cantPresce;
     aux->prescedentes[indice] = strdup(tarea1);
     (aux->cantPresce)++;
+
+    push(hashMap->stackAcc,2,tarea1,tarea2);
 }
   
-
 void mostrarTareasPendientes(HashMap *hashMap) {
     printf("TAREAS POR HACER, ORDENADAS POR PRIORIDAD Y PRECEDENCIA : \n\n");
+    
     int cantTareas = ((ArrayList *) hashMap->arrayList)->size;
     int cont = 1;
+    int contCompletados=0;
 
     for(int k = 0 ; k < cantTareas ; k++) {
         char *tareaActual = (char *) ( (ArrayList *)hashMap->arrayList)->array[k].nombre;
         
         Tarea* tareaActualMapa = (Tarea *) searchMap(hashMap,tareaActual)->value;
+        if (tareaActualMapa->check==1)continue;
         int totalPrecedentes = tareaActualMapa->cantPresce;
         
-        for(int j = 0 ; j < totalPrecedentes ; j++) {//impresion de precedentes
+        for(int j = 0 ; j < totalPrecedentes ; j++) { //impresion de precedentes
             Tarea* tareaPrecedente = (Tarea *) searchMap(hashMap,tareaActualMapa->prescedentes[j])->value;
             tareaPrecedente->esPrecedente = 1;
-            
-            printf("%i. Tarea %s (Prioridad: %i)\n", cont, tareaActualMapa->prescedentes[j],tareaPrecedente->prioridad);
+            if (tareaPrecedente->check==0)
+            {
+                printf("%i. Tarea %s (Prioridad: %i)\n", cont, tareaActualMapa->prescedentes[j],tareaPrecedente->prioridad);
+                cont++;
+                
+            }
+            else contCompletados++;
+        }
+        if (tareaActualMapa->esPrecedente == 0)
+        {
+            printf("%i. Tarea %s (Prioridad: %i)",cont,tareaActual,tareaActualMapa->prioridad);
             cont++;
         }
-        if (tareaActualMapa->esPrecedente == 0)printf("%i. Tarea %s (Prioridad: %i)",cont,tareaActual,tareaActualMapa->prioridad);
-        
-        if (totalPrecedentes != 0)
+        //si el total de presedentes de esta tarea es igual a el contcompletados quiere decir que todos sus presedentes estan marcados como completados
+        //entonces no los muestra
+        if (contCompletados!=tareaActualMapa->cantPresce)
         {
+            if (totalPrecedentes != 0) {
             printf(" - Precedente/s:");
             for(int j = 0 ; j < totalPrecedentes ; j++) {
                 
                 printf(" Tarea %s",tareaActualMapa->prescedentes[j]);
             }
             printf("\n");
+            }
+            else printf("\n");
         }
         else printf("\n");
-        cont++;
+    }
+    if (cont==1)printf("NO EXISTEN TAREAS ");
+}
+
+void marcarTarea(HashMap * hashMap) {
+    char tarea1[MAXLEN + 1];
+    do{
+        printf("INGRESE NOMBRE DE LA TAREA QUE ESTA COMPLETADA\n");
+        scanf("%s",tarea1);
+        getchar();
+    }while(strlen(tarea1) > MAXLEN);
+    Pair* current=searchMap(hashMap,tarea1);
+    if (current==NULL)
+    {
+        printf("LA TAREA %s AUN NO SE HA INGRESADO",tarea1);
+        return;
+    }
+    Tarea* aux =current->value;
+    
+    if (aux->esPrecedente == 1 || aux->cantPresce>0)//codigo que pregunta confirmacion del usuario
+    {
+        printf("¿ESTAS SEGURO QUE DESEA ELIMINAR LA TAREA %s?(S/N)\n",tarea1);
+        char respuesta[MAXLEN + 1];
+        do{
+            scanf("%s",respuesta);
+            getchar();
+            if (strcmp(respuesta,"S")==0)
+            {
+                aux->check = 1;
+                push(hashMap->stackAcc,4,tarea1,NULL);
+                printf("LA TAREA %s HA SIDO ELIINADA\n",tarea1);
+                return;
+            }
+            else if (strcmp(respuesta,"N")==0)return;
+        } while (strlen(respuesta) > MAXLEN || (strcmp(respuesta, "N") != 0 && strcmp(respuesta, "S") != 0));
+    }
+    
+    aux->check = 1;
+    push(hashMap->stackAcc,4,tarea1,NULL);
+    printf("LA TAREA %s HA SIDO ELIINADA\n",tarea1);
+}
+
+void deshacerUltimaAccion(HashMap * hashMap) {
+    if(!areTaskPresents(hashMap))
+    {
+        printf("NO EXISTEN TAREAS GUARDADAS\n");
+        return;
+    }
+    Info* elemen = pop(hashMap->stackAcc);
+    int opcion = elemen->accion;
+    
+    char* valorAccion = elemen->valorAccion; 
+    
+    if (opcion == -1){
+        printf("NO HAY ULTIMA ACCION REGISTRADA\n");
+        return;
+    }
+    
+    Tarea* tarea = (Tarea *) searchMap(hashMap,valorAccion)->value;//tarea1
+    
+    switch(opcion)
+    {   
+        case 1:
+            quitarTarea(hashMap,valorAccion,tarea->prioridad);
+            break;
+        case 2:
+            quitarPrecedencia(hashMap,tarea,valorAccion,elemen->cambio);
+            /*
+            printf("");
+            char* cambio = elemen->cambio;
+            Tarea* anteriorPrece = (Tarea *) searchMap(hashMap,cambio)->value; // tarea2
+            anteriorPrece->cantPresce--;
+            tarea->esPrecedente = 0;
+            
+            printf("LA TAREA %s  YA NO ES PRECEDENTE DE LA TAREA %s\n",tarea->nombre,anteriorPrece->nombre);
+            */ 
+            break;
+        case 4:
+            quitarMarcarTarea(tarea);
+            break;
+        default:
+            printf("LA OPCION INGRESADA NO SE PUEDE DESHACER\n");
     }
 }
 
 
+void importarArchivoCSV(char* nombre_archivo, HashMap* map) {
+    
+    FILE* archivo = fopen(nombre_archivo, "r");
+    
+    if (archivo == NULL) {
+        printf("NO SE PUDO ABRIR EL ARCHIVO %s\n", nombre_archivo);
+        return;
+    }
+    char* linea=NULL;
+    size_t longitud = 0;
+    ssize_t leido;
+    int cont = 0;
+    while ((leido = getline(&linea, &longitud, archivo)) != -1)
+    {
+        char* nomTarea = strtok(linea, ",");
+        int prioridad = atoi(strtok(NULL, ","));
+        
+        Tarea* tarea = (Tarea*) malloc(sizeof(Tarea));
+        strcpy(tarea->nombre,nomTarea);
+        tarea->prioridad=prioridad;
+
+        /*
+        tarea->cantidadItems=items_map;
+        tarea->mapItem = createMap(items_map);
+        
+        for (int i = 0; i < items_map; i++) {
+            char* item_nombre = strtok(NULL, ",");
+            
+            if (i == items_map - 1) //elimina el \n en el ultimo item almacenado
+                item_nombre[strlen(item_nombre) - 2] = '\0';
+            
+            Pair* item = searchMap(jugador->mapItem, item_nombre);
+            
+            if (item == NULL) { 
+                insertMap(jugador->mapItem, strdup(item_nombre), strdup(item_nombre));
+            }
+            
+        }
+        */
+
+        if (cont != 0) { //para no leer primera linea del csv
+            pushBack(map->arrayList,nomTarea,prioridad);
+            insertMap(map,nomTarea,tarea);
+         }
+        cont++;
+    }
+
+    free(linea);
+    fclose(archivo);
+    printf("LOS DATOS DE LOS JUGADORES SE HAN CARGADO DESDE %s\n", nombre_archivo);
+}
+
+
+void quitarTarea(HashMap * hashMap, char * valorAccion, int prioridad) {
+    eraseMap(hashMap,valorAccion);
+    delete(hashMap->arrayList,valorAccion);
+
+    printf("LA TAREA %s CON PRIORIDAD %i SE HA ELIMINADO\n",valorAccion,prioridad);
+}
+
+
+void quitarPrecedencia(HashMap * hashMap, Tarea * tarea, char * tarea1, char * precedente) {
+    Tarea* tareaPrescedente = (Tarea *) searchMap(hashMap,precedente)->value; // tarea2
+    tarea->cantPresce--;
+    tareaPrescedente->esPrecedente = 0;
+
+    printf("LA TAREA %s  YA NO ES PRECEDENTE DE LA TAREA %s\n",precedente,tarea1);
+}
+
+
+void quitarMarcarTarea(Tarea * tarea) {
+    tarea->check = 0;
+
+    printf("LA TAREA %s CON PRIORIDAD %i SE HA MARCADO COMO NO COMPLETADA\n",tarea->nombre,tarea->prioridad);
+
+}

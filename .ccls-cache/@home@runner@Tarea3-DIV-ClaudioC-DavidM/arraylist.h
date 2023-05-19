@@ -18,10 +18,12 @@ ArrayList * createList(int capacity);
 
 void pushBack(ArrayList * arrayList, char * nombre, int priority);
 
-void first(ArrayList * arrayList);
+Duo * first(ArrayList * arrayList);
 
-void next(ArrayList * arrayList);
+Duo * next(ArrayList * arrayList);
 
 int cmp(const void* elemento1, const void* elemento2);
+
+void delete(ArrayList * arrayList, char * key);
 
 #endif /* arrayList_h */

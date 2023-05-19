@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdbool.h>
+
 #include "stack.h"
 #define MAXLEN 30
 
@@ -36,7 +37,7 @@ int isStackFull(Stack * stack) {
     return (stack->top == stack->capac - 1);
 }
 
-void push(Stack* stack, int action, char* actionValue) {
+void push(Stack* stack, int action, char* actionValue, char * actionValue2) {
     if (stack->top == stack->capac -1 ) {
         stack->capac *= 2;
         stack->acciones = (Info**) realloc(stack->acciones, sizeof(Info*) * stack->capac);
@@ -52,6 +53,12 @@ void push(Stack* stack, int action, char* actionValue) {
     }
     info->accion = action;
     info->valorAccion = (char *) malloc(sizeof(char)* MAXLEN + 1);
+    
+    if(actionValue2 != NULL)
+    {
+        info->cambio = (char *) malloc(sizeof(char)* MAXLEN + 1);
+        strcpy(info->cambio,actionValue2);
+    }
     strcpy(info->valorAccion,actionValue);
     stack->top++;
     stack->acciones[stack->top] = info;
