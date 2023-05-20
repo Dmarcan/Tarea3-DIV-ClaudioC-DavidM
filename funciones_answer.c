@@ -274,45 +274,6 @@ void deshacerUltimaAccion(HashMap * hashMap) {
     }
 }
 
-
-void importarArchivoCSV(char* nombre_archivo, HashMap* map) {
-    
-    FILE* archivo = fopen(nombre_archivo, "r");
-    
-    if (archivo == NULL) {
-        printf("NO SE PUDO ABRIR EL ARCHIVO %s\n", nombre_archivo);
-        return;
-    }
-    char* linea=NULL;
-    size_t longitud = 0;
-    ssize_t leido;
-    int cont = 0;
-    while ((leido = getline(&linea, &longitud, archivo)) != -1)
-    {
-        char* nomTarea = strtok(linea, ",");
-        int prioridad = atoi(strtok(NULL, ","));
-        int cantPrece=0;
-        
-        Tarea* tarea = (Tarea*) malloc(sizeof(Tarea));
-        tarea->nombre=nomTarea;
-        tarea->prioridad=prioridad;
-
-        
-
-        tarea->cantPresce=cantPrece;
-        if (cont != 0) { //para no leer primera linea del csv
-            pushBack(map->arrayList,nomTarea,prioridad);
-            insertMap(map,nomTarea,tarea);
-         }
-        cont++;
-    }
-
-    free(linea);
-    fclose(archivo);
-    printf("LOS DATOS DE LOS JUGADORES SE HAN CARGADO DESDE %s\n", nombre_archivo);
-}
-
-
 void quitarTarea(HashMap * hashMap, char * valorAccion, int prioridad) {
     eraseMap(hashMap,valorAccion);
     delete(hashMap->arrayList,valorAccion);
@@ -336,3 +297,97 @@ void quitarMarcarTarea(Tarea * tarea) {
     printf("LA TAREA %s CON PRIORIDAD %i SE HA MARCADO COMO NO COMPLETADA\n",tarea->nombre,tarea->prioridad);
 
 }
+
+
+void importarArchivoCSV(char* nombre_archivo, HashMap* map) {
+    
+
+    FILE* archivo = fopen(nombre_archivo, "r");
+    
+    if (archivo == NULL) {
+        printf("NO SE PUDO ABRIR EL ARCHIVO %s\n", nombre_archivo);
+        return;
+    }
+    
+    
+
+    char* linea=NULL;
+    size_t longitud = 0;
+    ssize_t leido;
+    int cont = 0;
+    
+    int preceTotal=0;
+    char** preceTotall;
+    preceTotall=(char **) calloc(30, sizeof(char *));
+    while ((leido = getline(&linea, &longitud, archivo)) != -1)
+    {
+        if (cont==0)
+        {
+            cont++;
+            continue;
+        }
+        char* nomTarea = strtok(linea, ",");
+        int prioridad = atoi(strtok(NULL, ","));
+        
+        Tarea* tarea = createTarea(nomTarea, prioridad);
+        
+        char* prece = strtok(NULL, " ");
+        int cantPrece=0;
+        while (prece!=NULL)
+        {
+            if (!isspace((unsigned char)*prece))
+            {
+                tarea->prescedentes[cantPrece]=strdup(prece);
+                preceTotall[preceTotal]=strdup(prece);
+                cantPrece++;
+                preceTotal++;
+                //printf("%i\n",cantPrece);
+                
+            }
+            prece = strtok(NULL, " ");
+        }
+        if (cantPrece>0)
+        {
+            char* utliPrece=tarea->prescedentes[cantPrece-1];
+            utliPrece[strlen(utliPrece)-2]='\0';
+            tarea->prescedentes[cantPrece-1]=utliPrece;
+            preceTotall[preceTotal-1]=utliPrece;
+            
+        }
+        
+        tarea->cantPresce=cantPrece;
+        printf("\n \n la cantidad de prece de la tarea %s es %i",tarea->nombre,tarea->cantPresce);
+        
+        for (size_t k=0;k<tarea->cantPresce;k++)
+        {
+            printf(" %s ",tarea->prescedentes[k]);
+        }
+        printf("\n");
+
+
+        
+        if (cont != 0) { //para no leer primera linea del csv
+            insertMap(map,tarea->nombre,tarea);
+            pushBack(map->arrayList,nomTarea,prioridad);
+         }
+        cont++;
+        
+    }
+    //marcar como precedentes las tareaas en el mapa
+    for (size_t k=0;k<preceTotal;k++)
+    {
+        printf("%s",preceTotall[k]);
+        Pair* current =searchMap(map,preceTotall[k]);
+        Tarea* tare=current->value;
+        tare->esPrecedente=1;
+    }
+
+    free(linea);
+    fclose(archivo);
+    printf("LOS DATOS DE LOS JUGADORES SE HAN CARGADO DESDE %s\n", nombre_archivo);
+}
+
+
+
+
+

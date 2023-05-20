@@ -11,6 +11,7 @@ typedef struct Info Info;
     OPCION 2
     valorAccion = nombre de la tarea1
     cambio = nombre de la tarea2
+    
     OPCION 4
     valorAccion = nombre de la tarea agregada
     cambio = nombre de la tarea agregada
