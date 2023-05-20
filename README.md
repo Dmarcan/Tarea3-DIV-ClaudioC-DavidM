@@ -16,6 +16,7 @@ OPCION 5 DESHACER ULTIMA ACCION : esta función deshace la ultima accion hecha p
 OPCION 6
 
 (2) las opciones que funcionan correctamente y las que no lo hacen indicando posibles causas;
+Todas las funciones funcionan correctamente
 
 (3) coevaluación del trabajo en equipo (usando rúbrica) : 
 participacion activa: 

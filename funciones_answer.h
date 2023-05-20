@@ -18,6 +18,8 @@ void establecerPrecedencia(HashMap * hashMap);
 
 void mostrarTareasPendientes(HashMap * hashMap);
 
+void marcarEstado(HashMap *hashMap);
+
 void marcarTarea(HashMap * hashMap);
 
 void deshacerUltimaAccion(HashMap * hashMap);
@@ -29,7 +31,6 @@ void quitarTarea(HashMap * hashMap, char * valorAccion, int prioridad);
 void quitarPrecedencia(HashMap * hashMap, Tarea * tarea, char * tarea1, char * precedente);
 
 void quitarMarcarTarea(Tarea * tarea);
-
 
 
 #endif /* Funciones_answer_h */

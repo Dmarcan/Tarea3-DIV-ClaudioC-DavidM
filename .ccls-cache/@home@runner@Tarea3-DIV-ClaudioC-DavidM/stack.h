@@ -5,7 +5,7 @@ typedef struct Info Info;
 
 /*
     OPCION 1:
-    valorAccion = nombre de la tarea agregada
+    valorAccion = nombre tarea1
     cambio = nombre de la tarea agregada
     
     OPCION 2
@@ -20,9 +20,9 @@ typedef struct Info Info;
 
 
 struct Info{
-    int accion; //numero funcion
-    char * valorAccion; //nombre de la tarea
-    char * cambio; // que cambio hago
+    int accion; // Numero funcion
+    char * valorAccion; // Nombre tarea1
+    char * cambio; // Nombre tarea2 o null
 };
 
 Stack * createStack(int capacity);

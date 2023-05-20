@@ -11,7 +11,7 @@ ArrayList *createList(int capacity) {
   if (arrayList == NULL)
     return NULL;
 
-  arrayList->array = (Duo *)calloc(5, sizeof(Duo));
+  arrayList->array = (Duo *) calloc(5, sizeof(Duo));
   arrayList->size = 0;
   arrayList->capacity = capacity;
   arrayList->current = -1;
@@ -22,12 +22,14 @@ ArrayList *createList(int capacity) {
 void pushBack(ArrayList * arrayList, char *nombre, int priority) {
   if (arrayList->size >= 0.70 * arrayList->capacity) {
     arrayList->capacity *= 2;
-    arrayList->array = (Duo *)realloc(arrayList->array, sizeof(Duo) * (arrayList->capacity));
+    arrayList->array = (Duo *) realloc(arrayList->array, sizeof(Duo) * (arrayList->capacity));
 
+    
     if (arrayList->array == NULL) {
       printf("ERROR AL RESERVAR MEMORIA\n");
       return;
     }
+    
   }
 
   int size = arrayList->size;
@@ -42,10 +44,12 @@ void pushBack(ArrayList * arrayList, char *nombre, int priority) {
 }
 
 Duo * first(ArrayList *arrayList) {
-  if (arrayList->size == 0)
-    return NULL;
-  else
-    return &(arrayList->array[arrayList->current]);
+    if (arrayList->size == 0)
+        return NULL;
+    else {
+        arrayList->current = 0;
+        return &(arrayList->array[0]);
+    }
 }
 
 Duo * next(ArrayList *arrayList) {
