@@ -3,30 +3,22 @@
 #include "stdbool.h"
 #include "stack.h"
 typedef struct HashMap HashMap;
-typedef struct HashMap mapItem;
 
 typedef struct Pair {
-     char * key;
+     char * key; // Almacena la clave de la tarea
      void * value; 
 } Pair;
 
-typedef struct parItems{
-     char * key;
-     void * value; 
-} parItems;
-
 struct HashMap {
     Pair** buckets;
-    long size;
-    void* arrayList;
-    long capacity; 
-    long current; 
+    long size; // Tamaño ocupado de la tabla
+    void* arrayList; // Tda
+    long capacity; // Capacidad total de la tabla
+    long current; // Ultimo accedido de la tabla
     Stack* stackAcc; //Stack con acciones
 };
 
 HashMap * createMap(long capacity);
-
-//void insertInfo(HashMap * map, char * nombre, int priority);
 
 void insertMap(HashMap * table, char * key, void * value);
 
@@ -43,7 +35,5 @@ void enlarge(HashMap * map);
 bool areTaskPresents(HashMap * map);
 
 long sizeMap(HashMap * map);
-
-//void insertArray(HashMap * map, void *)
 
 #endif /* HashMap_h */

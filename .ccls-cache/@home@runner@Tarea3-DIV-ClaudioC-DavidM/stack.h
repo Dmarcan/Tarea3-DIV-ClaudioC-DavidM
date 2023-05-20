@@ -3,27 +3,26 @@
 typedef struct Stack Stack;
 typedef struct Info Info;
 
+struct Info{
+    int accion; // Numero funcion
+    char * valorAccion; // Nombre tarea1
+    char * cambio; // Nombre tarea2 o null
+};
+
 /*
     OPCION 1:
     valorAccion = nombre tarea1
-    cambio = nombre de la tarea agregada
+    cambio = NULL
     
     OPCION 2
     valorAccion = nombre de la tarea1
     cambio = nombre de la tarea2
     
     OPCION 4
-    valorAccion = nombre de la tarea agregada
-    cambio = nombre de la tarea agregada
+    valorAccion = nombre de la tarea que fue marcada como completada
+    cambio = NULL
 
 */
-
-
-struct Info{
-    int accion; // Numero funcion
-    char * valorAccion; // Nombre tarea1
-    char * cambio; // Nombre tarea2 o null
-};
 
 Stack * createStack(int capacity);
 

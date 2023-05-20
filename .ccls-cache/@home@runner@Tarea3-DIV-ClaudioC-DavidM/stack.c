@@ -66,7 +66,6 @@ void push(Stack* stack, int action, char* actionValue, char * actionValue2) {
 
 Info * pop(Stack * stack) {
     if (isStackEmpty(stack)) {
-        printf("Error: stack underflow\n");
         return NULL;
     }
     Info * info = stack->acciones[stack->top];

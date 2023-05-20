@@ -26,11 +26,6 @@ void deshacerUltimaAccion(HashMap * hashMap);
 
 void importarArchivoCSV(char* nombre_archivo, HashMap* map);
 
-void quitarTarea(HashMap * hashMap, char * valorAccion, int prioridad);
-
-void quitarPrecedencia(HashMap * hashMap, Tarea * tarea, char * tarea1, char * precedente);
-
-void quitarMarcarTarea(Tarea * tarea);
-
+void quitarPrecedencia(HashMap * hashMap, Tarea * tarea1, char * precedente);
 
 #endif /* Funciones_answer_h */

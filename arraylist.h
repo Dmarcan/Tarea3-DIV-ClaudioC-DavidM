@@ -2,15 +2,15 @@
 #define arrayList_h
 
 typedef struct Duo {
-    char * nombre;
-    int  priority;
+    char * nombre; // Nombre de la tarea
+    int  priority; // Prioridad de la tarea
 } Duo;
 
 typedef struct Priority{
-    long capacity;
-    long size;
-    long current;
-    Duo* array;
+    long capacity; // Capacidad del arreglo
+    long size; // Tamaño ocupado del arreglo
+    long current; // Ultimo elemento accedido
+    Duo* array; // Arreglo de tipo Duo
 } ArrayList;
 
 

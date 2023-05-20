@@ -11,15 +11,6 @@
 typedef struct HashMap HashMap;
 int enlarge_called=0; 
 
-struct mapItem {
-    parItems** buckets;
-    long size;
-    long capacity; 
-    long current; 
-};
-
-
-
 
 Pair * createPair( char * key,  void * value) {
     Pair * new = (Pair *)malloc(sizeof(Pair));
@@ -107,10 +98,11 @@ void eraseMap(HashMap * map,  char * key) {
     }
 }
 
+// Busca en el mapa segun la clave
 Pair * searchMap(HashMap * map,  char * key) {  
-    long indice = hash(key,map->capacity);
+    long indice = hash(key,map->capacity); 
     
-    while (map->buckets[indice] != NULL)
+    while (map->buckets[indice] != NULL) // Mapea por la clave
     {
         if (is_equal(key,map->buckets[indice]->key))
         {
@@ -122,6 +114,7 @@ Pair * searchMap(HashMap * map,  char * key) {
     return NULL;
 }
 
+// Retorna el primer elemento del mapa
 Pair * firstMap(HashMap * map) {
     for (size_t k = 0;k < map->capacity ; k++)
     {
@@ -148,12 +141,14 @@ Pair * nextMap(HashMap * map) {
 
 }
 
+// Si hay tareas en el mapa retorna true, sino false
 bool areTaskPresents(HashMap * map)
 {
     if(map->size == 0) return false;
     return true;
 }
 
+// Retorna el tamaño del mapa
 long sizeMap(HashMap * map)
 {
     return map->size;
