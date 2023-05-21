@@ -1,7 +1,8 @@
 #ifndef HashMap_h
 #define HashMap_h
 
-#include "stdbool.h"
+#include <stdbool.h>
+
 #include "stack.h"
 #include "arraylist.h"
 

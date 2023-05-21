@@ -8,7 +8,6 @@
 #include "arraylist.h"
 #include "stack.h"
 
-typedef struct HashMap HashMap;
 int enlarge_called=0; 
 
 struct HashMap {
@@ -27,7 +26,7 @@ Pair * createPair( char * key,  void * value) {
     return new;
 }
 
-// funcion hash para obtener el indice
+// Funcion hash para obtener el indice
 long hash( char * key, long capacity) {
     unsigned long hash = 0;
      char * ptr;

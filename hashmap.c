@@ -8,7 +8,6 @@
 #include "arraylist.h"
 #include "stack.h"
 
-typedef struct HashMap HashMap;
 int enlarge_called=0; 
 
 struct HashMap {

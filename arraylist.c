@@ -1,9 +1,17 @@
-//#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-//#include <string.h>
+#include <string.h>
+#include <stdbool.h>
 
 #include "arraylist.h"
+
+
+struct ArrayList{
+    long capacity; // Capacidad del arreglo
+    long size; // Tamaño ocupado del arreglo
+    long current; // Ultimo elemento accedido
+    Duo* array; // Arreglo de tipo Duo
+};
 
 ArrayList *createList(int capacity) {
   ArrayList *arrayList = (ArrayList *)malloc(sizeof(ArrayList));
@@ -29,7 +37,6 @@ void pushBack(ArrayList * arrayList, char *nombre, int priority) {
       printf("ERROR AL RESERVAR MEMORIA\n");
       return;
     }
-    
   }
 
   int size = arrayList->size;
@@ -70,7 +77,7 @@ int cmp(const void *elemento1, const void *elemento2) {
     return 1;
 }
 
-void delete(ArrayList * arrayList, char * key) {
+void deleteArray(ArrayList * arrayList, char * key) {
     Duo* current = first(arrayList);
 
     int k = 0;
@@ -89,17 +96,3 @@ void delete(ArrayList * arrayList, char * key) {
 
     arrayList->size--;
 }
-
-/*
-void search(arrayList * arrayList, char * key) {
-    Duo* current = first(arrayList);
-
-    int k = 0;
-        
-    while(current != NULL && strcmp(current->nombre,nombre)) {
-        current = next(arrayList);
-        k++;
-    }
-    
-}
-*/

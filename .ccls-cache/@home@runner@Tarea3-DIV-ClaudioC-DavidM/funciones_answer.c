@@ -3,7 +3,6 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdbool.h>
-#define car *
 
 #include "arraylist.h"
 #include "stack.h"
@@ -208,7 +207,7 @@ void mostrarTareasPendientes(HashMap *hashMap) {
         }
         else
         {
-             if (tareaActualMapa->estado !=1 )// Si es precedente pero aun no se ha impreso, se imprime junto con sus precedentes
+             if (tareaActualMapa->estado != 1) // Si es precedente pero aun no se ha impreso, se imprime junto con sus precedentes
              {
                  tareaActualMapa->estado = 1;
                  printf("%i. Tarea %s (Prioridad: %i)",cont,tareaActual,tareaActualMapa->prioridad);
@@ -221,7 +220,7 @@ void mostrarTareasPendientes(HashMap *hashMap) {
                     printf(" - Precedente/s:");
                     for(int j = 0 ; j < totalPrecedentes ; j++) { // Impresion de precedentes
                         Tarea* tareaPrecedente = (Tarea *) searchMap(hashMap,tareaActualMapa->prescedentes[j])->value;
-                        if (tareaPrecedente->check==0)
+                        if (tareaPrecedente->check == 0)
                         {
                             printf(" Tarea %s",tareaPrecedente->nombre);
                         }
@@ -231,7 +230,7 @@ void mostrarTareasPendientes(HashMap *hashMap) {
                     else printf("\n");
                 }
                 else printf("\n");
-                 }
+            }
         }
         contCompletados=0;
     }
@@ -301,7 +300,7 @@ void deshacerUltimaAccion(HashMap * hashMap) {
     }
     int opcion = elemen->accion;
     
-    char* tarea1String = elemen->valorAccion; 
+    char* tarea1String = elemen->actionValue1; 
     
     Tarea* tarea1 = (Tarea *) searchMap(hashMap,tarea1String)->value;
     
@@ -309,15 +308,15 @@ void deshacerUltimaAccion(HashMap * hashMap) {
     {   
         case 1:
             eraseMap(hashMap,tarea1String); // Elimina la tarea agregada del mapa
-            delete(returnArray(hashMap),tarea1String);
+            deleteArray(returnArray(hashMap),tarea1String);
 
             printf("LA TAREA %s CON PRIORIDAD %i SE HA ELIMINADO\n",tarea1String,tarea1->prioridad);
             break;
         case 2:
-            quitarPrecedencia(hashMap,tarea1,elemen->cambio);
+            quitarPrecedencia(hashMap,tarea1,elemen->actionValue2);
             break;
         case 4:
-            tarea1->check = 0; // Descmarca la tarea como completada
+            tarea1->check = 0; // Desmarca la tarea como completada
             printf("LA TAREA %s CON PRIORIDAD %i SE HA MARCADO COMO NO COMPLETADA\n",tarea1->nombre,tarea1->prioridad);
             break;
         default:
@@ -345,8 +344,8 @@ void importarArchivoCSV(char* nombre_archivo, HashMap* map) {
     ssize_t leido;
     int cont = 0;// Se utiliza para ignorar la primera linea del archivo
     
-    int preceTotal=0;// Total de precedentes en el archivo
-    char** preceTotall; // Almacena todos los precedentes del archivo para al terminar de leerlo en base a el nombre de la tarea precedente buscar su posicion en el mapa y la variable esPrecedente marcarla como 1
+    int preceTotal = 0;// Total de precedentes en el archivo
+    char** preceTotall; // Almacena todos los precedentes del archivo para al terminar de leerlo en base a el nombre de la tarea precedente buscar su posicion en el mapa 
     preceTotall=(char **) calloc(30, sizeof(char *));
     while ((leido = getline(&linea, &longitud, archivo)) != -1)
     {
@@ -359,7 +358,6 @@ void importarArchivoCSV(char* nombre_archivo, HashMap* map) {
         int prioridad = atoi(strtok(NULL, ","));
         
         Tarea* tarea = createTarea(nomTarea, prioridad);
-        
         
         char* prece = strtok(NULL, " ");
         int cantPrece=0;
@@ -385,7 +383,7 @@ void importarArchivoCSV(char* nombre_archivo, HashMap* map) {
         }
         tarea->cantPresce=cantPrece;
         insertMap(map,tarea->nombre,tarea); // Se inserta al mapa
-        pushBack(returnArray(map),tarea->nombre,prioridad);//se inserta al arreglo para ordenarlo por prioridad
+        pushBack(returnArray(map),tarea->nombre,prioridad);// Se inserta al arreglo para ordenarlo por prioridad
         cont++;
     }
     // Marcar como que son precedentes las tareas en el mapa

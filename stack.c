@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <stdbool.h>
 
 #include "stack.h"
 #define MAXLEN 30
@@ -37,7 +36,7 @@ int isStackFull(Stack * stack) {
     return (stack->top == stack->capac - 1);
 }
 
-void push(Stack* stack, int action, char* actionValue, char * actionValue2) {
+void push(Stack* stack, int action, char* actionValue1, char * actionValue2) {
     if (stack->top == stack->capac -1 ) {
         stack->capac *= 2;
         stack->acciones = (Info**) realloc(stack->acciones, sizeof(Info*) * stack->capac);
@@ -52,18 +51,19 @@ void push(Stack* stack, int action, char* actionValue, char * actionValue2) {
         exit(1);
     }
     info->accion = action;
-    info->valorAccion = (char *) malloc(sizeof(char)* MAXLEN + 1);
+    info->actionValue1 = (char *) malloc(sizeof(char)* MAXLEN + 1);
     
     if(actionValue2 != NULL)
     {
-        info->cambio = (char *) malloc(sizeof(char)* MAXLEN + 1);
-        strcpy(info->cambio,actionValue2);
+        info->actionValue2 = (char *) malloc(sizeof(char)* MAXLEN + 1);
+        strcpy(info->actionValue2,actionValue2);
     }
-    strcpy(info->valorAccion,actionValue);
+    strcpy(info->actionValue1,actionValue1);
     stack->top++;
     stack->acciones[stack->top] = info;
 }
 
+// Retorna el ultimo elemento de la stack
 Info * pop(Stack * stack) {
     if (isStackEmpty(stack)) {
         return NULL;
