@@ -11,6 +11,14 @@
 typedef struct HashMap HashMap;
 int enlarge_called=0; 
 
+struct HashMap {
+    Pair** buckets;
+    long size; // Tamaño ocupado de la tabla
+    void* arrayList; // Tda
+    long capacity; // Capacidad total de la tabla
+    long current; // Ultimo accedido de la tabla
+    Stack* stackAcc; //Stack con acciones
+};
 
 Pair * createPair( char * key,  void * value) {
     Pair * new = (Pair *)malloc(sizeof(Pair));
@@ -19,6 +27,7 @@ Pair * createPair( char * key,  void * value) {
     return new;
 }
 
+// funcion hash para obtener el indice
 long hash( char * key, long capacity) {
     unsigned long hash = 0;
      char * ptr;
@@ -152,4 +161,16 @@ bool areTaskPresents(HashMap * map)
 long sizeMap(HashMap * map)
 {
     return map->size;
+}
+
+// Retorna la stack de ultimas acciones
+Stack* returnStack(HashMap * map)
+{
+    return map->stackAcc;
+}
+
+// Retorna el arreglo que esta ordenado mediante prioridad
+ArrayList* returnArray(HashMap * map)
+{
+    return map->arrayList;
 }

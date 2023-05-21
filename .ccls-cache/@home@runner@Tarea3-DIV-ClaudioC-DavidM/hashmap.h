@@ -1,22 +1,16 @@
 #ifndef HashMap_h
 #define HashMap_h
+
 #include "stdbool.h"
 #include "stack.h"
+#include "arraylist.h"
+
 typedef struct HashMap HashMap;
 
 typedef struct Pair {
      char * key; // Almacena la clave de la tarea
      void * value; 
 } Pair;
-
-struct HashMap {
-    Pair** buckets;
-    long size; // Tamaño ocupado de la tabla
-    void* arrayList; // Tda
-    long capacity; // Capacidad total de la tabla
-    long current; // Ultimo accedido de la tabla
-    Stack* stackAcc; //Stack con acciones
-};
 
 HashMap * createMap(long capacity);
 
@@ -35,5 +29,9 @@ void enlarge(HashMap * map);
 bool areTaskPresents(HashMap * map);
 
 long sizeMap(HashMap * map);
+
+Stack* returnStack(HashMap * map);
+
+ArrayList* returnArray(HashMap * map);
 
 #endif /* HashMap_h */
